@@ -16,8 +16,8 @@ spec:
     spec:
      containers:
        - name: ca
-         image: hyperledger/fabric-ca:x86_64-1.0.0
-         env: 
+         image: hyperledger/fabric-ca:1.2.0
+         env:
          - name:  FABRIC_CA_HOME
            value: /etc/hyperledger/fabric-ca-server
          - name:  FABRIC_CA_SERVER_CA_NAME
@@ -39,9 +39,9 @@ spec:
      volumes:
        - name: certificate
          persistentVolumeClaim:
-             claimName: $pvName 
+             claimName: $pvName
 
---- 
+---
 apiVersion: v1
 kind: Service
 metadata:

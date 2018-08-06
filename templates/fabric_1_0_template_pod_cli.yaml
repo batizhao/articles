@@ -7,9 +7,8 @@ spec:
        storage: 500Mi
     accessModes:
        - ReadWriteMany
-    nfs: 
-      path: /opt/share/channel-artifacts
-      server: 10.112.122.9 #change to your nfs server ip here
+    hostPath:
+      path: /data/jenkins
 ---
 
 apiVersion: v1
@@ -41,9 +40,9 @@ spec:
     spec:
       containers:
         - name: $name
-          image:  hyperledger/fabric-tools:x86_64-1.0.0
+          image:  hyperledger/fabric-tools:1.2.0
           env:
-          
+
           - name: CORE_PEER_TLS_ENABLED
             value: "false"
           #- name: CORE_PEER_TLS_CERT_FILE
@@ -92,4 +91,4 @@ spec:
               claimName: $artifactsName
         - name: run
           hostPath:
-            path: /var/run 
+            path: /var/run

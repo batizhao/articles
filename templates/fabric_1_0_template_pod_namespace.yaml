@@ -13,9 +13,8 @@ spec:
     storage: 500Mi
   accessModes:
     - ReadWriteMany
-  nfs:
-    path: $path
-    server: 10.112.122.9  #change to your nfs server ip here
+  hostPath:
+    path: /data/jenkins
 
 ---
 apiVersion: v1

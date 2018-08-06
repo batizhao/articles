@@ -17,13 +17,13 @@ spec:
     spec:
       containers:
       - name: couchdb
-        image: hyperledger/fabric-couchdb:x86_64-1.0.0
+        image: hyperledger/fabric-couchdb:0.4.10
         ports:
          - containerPort: 5984
 
 
-      - name: $podName 
-        image: hyperledger/fabric-peer:x86_64-1.0.0
+      - name: $podName
+        image: hyperledger/fabric-peer:1.2.0
         env:
         - name: CORE_LEDGER_STATE_STATEDATABASE
           value: "CouchDB"
@@ -38,11 +38,11 @@ spec:
         - name: CORE_PEER_GOSSIP_USELEADERELECTION
           value: "true"
         - name: CORE_PEER_GOSSIP_ORGLEADER
-          value: "false" 
+          value: "false"
         - name: CORE_PEER_PROFILE_ENABLED
           value: "true"
         - name: CORE_PEER_TLS_CERT_FILE
-          value: "/etc/hyperledger/fabric/tls/server.crt" 
+          value: "/etc/hyperledger/fabric/tls/server.crt"
         - name: CORE_PEER_TLS_KEY_FILE
           value: "/etc/hyperledger/fabric/tls/server.key"
         - name: CORE_PEER_TLS_ROOTCERT_FILE
@@ -63,10 +63,10 @@ spec:
         command: ["peer"]
         args: ["node","start"]
         volumeMounts:
-         #- mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts 
+         #- mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
          #  name: certificate
          #  subPath: channel-artifacts
-         - mountPath: /etc/hyperledger/fabric/msp 
+         - mountPath: /etc/hyperledger/fabric/msp
            name: certificate
            #subPath: crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp
            subPath: $mspPath
@@ -83,7 +83,7 @@ spec:
        - name: run
          hostPath:
            path: /run
-       
+
 
 ---
 apiVersion: v1
