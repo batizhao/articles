@@ -4,11 +4,12 @@ metadata:
     name: $artifactsName
 spec:
     capacity:
-       storage: 500Mi
+      storage: 500Mi
     accessModes:
        - ReadWriteMany
-    hostPath:
-      path: /data/jenkins
+    nfs:
+      path: /opt/share/channel-artifacts
+      server: 172.31.21.208 #change to your nfs server ip here
 ---
 
 apiVersion: v1
