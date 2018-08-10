@@ -1,2 +1,3 @@
 # fabric-on-kubernetes
-Articles on technical topics such as blockchain, container and IoT.
+
+在 Kubernetes 上部署 Hyperledger Fabric v1.2。
