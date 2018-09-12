@@ -8,7 +8,7 @@ BASEDIR = os.path.dirname(__file__)
 ORDERER = os.path.join(BASEDIR, "../crypto-config/ordererOrganizations")
 PEER = os.path.join(BASEDIR, "../crypto-config/peerOrganizations")
 
-#generateNamespacePod generate the yaml file to create the namespace for k8s, and return a set of paths which indicate the location of org files  
+#generateNamespacePod generate the yaml file to create the namespace for k8s, and return a set of paths which indicate the location of org files
 
 def generateNamespacePod(DIR):
 	orgs = []
@@ -18,15 +18,15 @@ def generateNamespacePod(DIR):
 		tc.configORGS(org, orgDIR)
 		orgs.append(orgDIR)
 		#orgs.append(orgDIR + "/" + DIR.lower())
-	
-	#print(orgs)	
+
+	#print(orgs)
 	return orgs
 
 
 def generateDeploymentPod(orgs):
 	for org in orgs:
 
-		if org.find("peer") != -1: #whether it create orderer pod or peer pod 
+		if org.find("peer") != -1: #whether it create orderer pod or peer pod
 			suffix = "/peers"
 		else:
 			suffix = "/orderers"
@@ -52,4 +52,3 @@ def allInOne():
 
 if __name__ == "__main__" :
 	allInOne()
-	

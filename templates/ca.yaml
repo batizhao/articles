@@ -1,3 +1,4 @@
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -18,28 +19,36 @@ spec:
        - name: ca
          image: hyperledger/fabric-ca:1.2.0
          env:
-         - name:  FABRIC_CA_HOME
+         - name: FABRIC_CA_HOME
            value: /etc/hyperledger/fabric-ca-server
-         - name:  FABRIC_CA_SERVER_CA_NAME
+         - name: FABRIC_CA_SERVER_CA_NAME
            value: ca
-         - name:  FABRIC_CA_SERVER_TLS_ENABLED
+         - name: FABRIC_CA_SERVER_TLS_ENABLED
            value: "false"
-         - name:  FABRIC_CA_SERVER_TLS_CERTFILE
+         - name: FABRIC_CA_SERVER_TLS_CERTFILE
            value: $tlsCert
-         - name:  FABRIC_CA_SERVER_TLS_KEYFILE
+         - name: FABRIC_CA_SERVER_TLS_KEYFILE
            value: $tlsKey
+         - name: GODEBUG
+           value: netdns=go
          ports:
           - containerPort: 7054
          command: ["sh"]
-         args:  ["-c", $command]
+         args: ["-c", $command]
          volumeMounts:
           - mountPath: /etc/hyperledger/fabric-ca-server-config
             name: certificate
             subPath: $caPath
+          - mountPath: /etc/hyperledger/fabric-ca-server
+            name: cadata
+            subPath: $caDataPath
      volumes:
        - name: certificate
          persistentVolumeClaim:
-             claimName: $pvName
+            claimName: $pvName
+       - name: cadata
+         persistentVolumeClaim:
+            claimName: $pvDataName
 
 ---
 apiVersion: v1

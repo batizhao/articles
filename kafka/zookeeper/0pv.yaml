@@ -12,7 +12,7 @@ spec:
   capacity:
     storage: 20Gi
   nfs:
-    path: "/home/data/kafka/datadir-kafka-0"
+    path: "/data/kafka/datadir-kafka-0"
     server: 172.31.21.208
 ---
 apiVersion: v1
@@ -28,7 +28,7 @@ spec:
   capacity:
     storage: 20Gi
   nfs:
-    path: "/home/data/kafka/datadir-kafka-1"
+    path: "/data/kafka/datadir-kafka-1"
     server: 172.31.21.208
 ---
 apiVersion: v1
@@ -44,7 +44,7 @@ spec:
   capacity:
     storage: 20Gi
   nfs:
-    path: "/home/data/kafka/datadir-kafka-2"
+    path: "/data/kafka/datadir-kafka-2"
     server: 172.31.21.208
 ---
 apiVersion: v1
@@ -60,5 +60,5 @@ spec:
   capacity:
     storage: 20Gi
   nfs:
-    path: "/home/data/kafka/datadir-kafka-3"
+    path: "/data/kafka/datadir-kafka-3"
     server: 172.31.21.208

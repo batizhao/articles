@@ -19,7 +19,7 @@ def deleteOrderers(path):
 	for org in orgs:
 		orgPath = os.path.join(path, org)
 		namespaceYaml = os.path.join(orgPath, org + "-namespace.yaml" ) #orgYaml namespace.yaml
-		
+
 		for orderer in os.listdir(orgPath + "/orderers"):
 			ordererPath = os.path.join(orgPath + "/orderers", orderer)
 			ordererYaml = os.path.join(ordererPath, orderer + ".yaml")
@@ -29,8 +29,6 @@ def deleteOrderers(path):
 		checkAndDelete(namespaceYaml)
 
 
-
-
 def deletePeers(path):
 	orgs = os.listdir(path)
 	for org in orgs:
@@ -38,17 +36,17 @@ def deletePeers(path):
 
 		namespaceYaml = os.path.join(orgPath, org + "-namespace.yaml" ) # namespace.yaml
 		caYaml = os.path.join(orgPath, org + "-ca.yaml" ) # ca.yaml
-		cliYaml = os.path.join(orgPath, org + "-cli.yaml" ) # cli.yaml  
+		cliYaml = os.path.join(orgPath, org + "-cli.yaml" ) # cli.yaml
 
 		for peer in os.listdir(orgPath + "/peers"):
 			peerPath = os.path.join(orgPath + "/peers", peer)
 			peerYaml = os.path.join(peerPath, peer + ".yaml")
-			checkAndDelete(peerYaml)	
-		
-		checkAndDelete(cliYaml) 
+			checkAndDelete(peerYaml)
+
+		checkAndDelete(cliYaml)
 		checkAndDelete(caYaml)
 		checkAndDelete(namespaceYaml)
-		
+
 
 def checkAndDelete(f):
 	if os.path.isfile(f):

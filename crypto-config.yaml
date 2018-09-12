@@ -1,8 +1,8 @@
 OrdererOrgs:
-  - Name: Orderer1
+  - Name: Orderer
     Domain: orgorderer1
-    Template:
-      Count: 1
+    Specs:
+      - Hostname: orderer0
 
 PeerOrgs:
   - Name: Org1

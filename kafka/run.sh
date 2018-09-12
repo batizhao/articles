@@ -1,18 +1,13 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
-current_path=`pwd`
+DATAPATH=/opt/data
 
-# kubectl create -f ${current_path}/kafka/namespace.yaml
+mkdir -p /opt/data/kafka/datadir-kafka-{0,1,2,3}
 
-kubectl create -f ${current_path}/zookeeper/
+kubectl create -f zookeeper/
 
 sleep 5
 
-kubectl create -f ${current_path}/kafka/
-
-# sleep 5
-
-# kubectl create -f ${current_path}/createTopics/topic-create.yaml
+kubectl create -f kafka/
 
 echo "Deploying Kafka and Zookeeper finished."
-

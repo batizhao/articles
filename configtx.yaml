@@ -6,6 +6,43 @@
 ---
 ################################################################################
 #
+#   SECTION: Capabilities
+#
+#   - This section defines the capabilities of fabric network. This is a new
+#   concept as of v1.1.0 and should not be utilized in mixed networks with
+#   v1.0.x peers and orderers.  Capabilities define features which must be
+#   present in a fabric binary for that binary to safely participate in the
+#   fabric network.  For instance, if a new MSP type is added, newer binaries
+#   might recognize and validate the signatures from this type, while older
+#   binaries without this support would be unable to validate those
+#   transactions.  This could lead to different versions of the fabric binaries
+#   having different world states.  Instead, defining a capability for a channel
+#   informs those binaries without this capability that they must cease
+#   processing transactions until they have been upgraded.  For v1.0.x if any
+#   capabilities are defined (including a map with all capabilities turned off)
+#   then the v1.0.x peer will deliberately crash.
+#
+################################################################################
+Capabilities:
+    # Channel capabilities apply to both the orderers and the peers and must be
+    # supported by both.  Set the value of the capability to true to require it.
+    Global: &ChannelCapabilities
+        V1_1: true
+
+    # Orderer capabilities apply only to the orderers, and may be safely
+    # manipulated without concern for upgrading peers.  Set the value of the
+    # capability to true to require it.
+    Orderer: &OrdererCapabilities
+        V1_1: true
+
+    # Application capabilities apply only to the peer network, and may be safely
+    # manipulated without concern for upgrading orderers.  Set the value of the
+    # capability to true to require it.
+    Application: &ApplicationCapabilities
+        V1_2: true
+
+################################################################################
+#
 #   Section: Organizations
 #
 #   - This section defines the different organizational identities which will
@@ -14,82 +51,59 @@
 ################################################################################
 Organizations:
 
-    # SampleOrg defines an MSP using the sampleconfig.  It should never be used
-    # in production but may be used as a template for other definitions
     - &OrdererOrg
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: Orgorderer1MSP
-
-        # ID to load the MSP definition as
         ID: Orgorderer1MSP
-
-        # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: crypto-config/ordererOrganizations/orgorderer1/msp
+        # Policies defines the set of policies at this level of the config tree
+        # For organization policies, their canonical path is usually
+        #   /Channel/<Application|Orderer>/<OrgName>/<PolicyName>
+        Policies: &OrdererOrgPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('Orgorderer1MSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Orgorderer1MSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Orgorderer1MSP.admin')"
 
     - &Org1
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: Org1MSP
-
-        # ID to load the MSP definition as
         ID: Org1MSP
-
         MSPDir: crypto-config/peerOrganizations/org1/msp
-
+        Policies: &Org1Policies
+            Readers:
+                Type: Signature
+                Rule: "OR('Org1MSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Org1MSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Org1MSP.admin')"
         AnchorPeers:
-            # AnchorPeers defines the location of peers which can be used
-            # for cross org gossip communication.  Note, this value is only
-            # encoded in the genesis block in the Application section context
             - Host: peer0.org1
               Port: 7051
 
     - &Org2
-        # DefaultOrg defines the organization which is used in the sampleconfig
-        # of the fabric.git development environment
         Name: Org2MSP
-
-        # ID to load the MSP definition as
         ID: Org2MSP
-
         MSPDir: crypto-config/peerOrganizations/org2/msp
-
+        Policies: &Org2Policies
+            Readers:
+                Type: Signature
+                Rule: "OR('Org2MSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Org2MSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Org2MSP.admin')"
         AnchorPeers:
-            # AnchorPeers defines the location of peers which can be used
-            # for cross org gossip communication.  Note, this value is only
-            # encoded in the genesis block in the Application section context
             - Host: peer0.org2
               Port: 7051
-
-Capabilities:
-    # Channel capabilities apply to both the orderers and the peers and must be
-    # supported by both.  Set the value of the capability to true to require it.
-    Global: &ChannelCapabilities
-        # V1.1 for Global is a catchall flag for behavior which has been
-        # determined to be desired for all orderers and peers running v1.0.x,
-        # but the modification of which would cause incompatibilities.  Users
-        # should leave this flag set to true.
-        V1_1: true
-
-    # Orderer capabilities apply only to the orderers, and may be safely
-    # manipulated without concern for upgrading peers.  Set the value of the
-    # capability to true to require it.
-    Orderer: &OrdererCapabilities
-        # V1.1 for Order is a catchall flag for behavior which has been
-        # determined to be desired for all orderers running v1.0.x, but the
-        # modification of which  would cause incompatibilities.  Users should
-        # leave this flag set to true.
-        V1_1: true
-
-    # Application capabilities apply only to the peer network, and may be safely
-    # manipulated without concern for upgrading orderers.  Set the value of the
-    # capability to true to require it.
-    Application: &ApplicationCapabilities
-        # V1.2 for Application is a catchall flag for behavior which has been
-        # determined to be desired for all peers running v1.0.x, but the
-        # modification of which would cause incompatibilities.  Users should
-        # leave this flag set to true.
-        V1_2: true
 
 ################################################################################
 #
@@ -104,6 +118,23 @@ Application: &ApplicationDefaults
     # Organizations is the list of orgs which are defined as participants on
     # the application side of the network
     Organizations:
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    # Capabilities describes the application level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *ApplicationCapabilities
 
 ################################################################################
 #
@@ -146,12 +177,65 @@ Orderer: &OrdererDefaults
         Brokers:
             - kafka-0.broker.kafka:9092
             - kafka-1.broker.kafka:9092
-            - kafka-2.broker.kafka:9092
-            - kafka-3.broker.kafka:9092
 
     # Organizations is the list of orgs which are defined as participants on
     # the orderer side of the network
     Organizations:
+
+    # Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+    # Capabilities describes the orderer level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *OrdererCapabilities
+
+################################################################################
+#
+#   CHANNEL
+#
+#   This section defines the values to encode into a config transaction or
+#   genesis block for channel related parameters.
+#
+################################################################################
+Channel: &ChannelDefaults
+
+    Policies:
+        # Who may invoke the 'Deliver' API
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        # Who may invoke the 'Broadcast' API
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        # By default, who may modify elements at this config level
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    # Capabilities describes the channel level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *ChannelCapabilities
 
 ################################################################################
 #
@@ -164,14 +248,12 @@ Orderer: &OrdererDefaults
 Profiles:
 
     TwoOrgsOrdererGenesis:
-        Capabilities:
-            <<: *ChannelCapabilities
+        <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
+            OrdererType: solo
             Organizations:
                 - *OrdererOrg
-            Capabilities:
-                <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
                 Organizations:
@@ -185,5 +267,3 @@ Profiles:
             Organizations:
                 - *Org1
                 - *Org2
-            Capabilities:
-                <<: *ApplicationCapabilities

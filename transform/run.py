@@ -33,12 +33,12 @@ def runPeers(path):
 
 		namespaceYaml = os.path.join(orgPath, org + "-namespace.yaml" ) # namespace.yaml
 		checkAndRun(namespaceYaml)
-		
+
 		caYaml = os.path.join(orgPath, org + "-ca.yaml" ) # namespace.yaml
-		checkAndRun(caYaml)		
-		
+		checkAndRun(caYaml)
+
 		cliYaml = os.path.join(orgPath, org + "-cli.yaml" ) # namespace.yaml
-		checkAndRun(cliYaml)		
+		checkAndRun(cliYaml)
 
 		for peer in os.listdir(orgPath + "/peers"):
 			peerPath = os.path.join(orgPath + "/peers", peer)

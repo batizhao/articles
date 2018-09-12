@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -8,6 +9,8 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: $pvName
+  labels:
+    app: $pvName
 spec:
   capacity:
     storage: 500Mi
@@ -15,10 +18,9 @@ spec:
     - ReadWriteMany
   nfs:
     path: $path
-    server: 172.31.21.208  #change to your nfs server ip here
+    server: 172.31.21.208
 
 ---
-
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -30,3 +32,38 @@ spec:
  resources:
    requests:
      storage: 10Mi
+ selector:
+   matchLabels:
+     app: $pvName
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: $pvDataName
+  labels:
+    app: $pvDataName
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: $datapath
+    server: 172.31.21.208
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ namespace: $org
+ name: $pvDataName
+spec:
+ accessModes:
+   - ReadWriteMany
+ resources:
+   requests:
+     storage: 10Gi
+ selector:
+   matchLabels:
+     app: $pvDataName
