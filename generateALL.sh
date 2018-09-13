@@ -50,8 +50,6 @@ function clean () {
 	rm -rf /opt/share/fabric/channel-artifacts/*
 	rm -rf crypto-config
 	rm -rf channel-artifacts
-	rm -rf $DATAPATH/orderer/*
-	rm -rf $DATAPATH/peer/*
 }
 
 clean
